@@ -88,6 +88,7 @@ function moveFilteredBook(bookFiltered, allBook) {
     allBook.push(selectedBook);
   });
 }
+
 const getAllBooksHandler = (request, h) => {
   const {
     name: keywordBook,
