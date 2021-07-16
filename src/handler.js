@@ -77,37 +77,70 @@ const addBookHandler = (request, h) => {
     .code(500);
 };
 
-function swapBook(allBook) {
-  const { id, name, publisher } = allBook;
-  return { id, name, publisher };
-}
-
 const getAllBooksHandler = (request, h) => {
-  const { name: keywordBook, reading, finished } = request.query;
-  let allBook = [];
+  const {
+    name: keywordBook,
+    reading: statusRead,
+    finished: statusFinish,
+  } = request.query;
 
-  console.log(reading);
+  const allBook = [];
 
   if (keywordBook) {
-    allBook = books.filter(
+    const bookFiltered = books.filter(
       (book) =>
         book.name.toLowerCase().indexOf(keywordBook.toLowerCase()) !== -1
     );
-    allBook = swapBook(allBook);
-  } else if (parseInt(reading, 10) === 0 || parseInt(reading, 10) === 1) {
-    allBook = books.filter((book) => book.reading === reading);
-    allBook = swapBook(allBook);
-  } else if (parseInt(finished, 10) === 0 || parseInt(finished, 10) === 1) {
-    allBook = books.filter((book) => book.reading === finished);
-    allBook = swapBook(allBook);
+    bookFiltered.forEach((el) => {
+      const { id, name, publisher } = el;
+      const selectedBook = {
+        id,
+        name,
+        publisher,
+      };
+      allBook.push(selectedBook);
+    });
+  } else if (parseInt(statusRead, 10) === 0 || parseInt(statusRead, 10) === 1) {
+    const bookFiltered = books.filter(
+      (book) => book.reading === Boolean(parseInt(statusRead, 10))
+    );
+    bookFiltered.forEach((el) => {
+      const { id, name, publisher } = el;
+      const selectedBook = {
+        id,
+        name,
+        publisher,
+      };
+      allBook.push(selectedBook);
+    });
+  } else if (
+    parseInt(statusFinish, 10) === 0 ||
+    parseInt(statusFinish, 10) === 1
+  ) {
+    const bookFiltered = books.filter(
+      (book) => book.finished === Boolean(parseInt(statusFinish, 10))
+    );
+    bookFiltered.forEach((el) => {
+      const { id, name, publisher } = el;
+      const selectedBook = {
+        id,
+        name,
+        publisher,
+      };
+      allBook.push(selectedBook);
+    });
+    console.log(allBook);
   } else {
-    books.forEach((book) => {
-      allBook.push(swapBook(book));
+    books.forEach((el) => {
+      const { id, name, publisher } = el;
+      const selectedBook = {
+        id,
+        name,
+        publisher,
+      };
+      allBook.push(selectedBook);
     });
   }
-
-  console.log(allBook);
-
   return h
     .response({
       status: "success",
