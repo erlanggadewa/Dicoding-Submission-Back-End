@@ -77,6 +77,17 @@ const addBookHandler = (request, h) => {
     .code(500);
 };
 
+function moveFilteredBook(bookFiltered, allBook) {
+  bookFiltered.forEach((el) => {
+    const { id, name, publisher } = el;
+    const selectedBook = {
+      id,
+      name,
+      publisher,
+    };
+    allBook.push(selectedBook);
+  });
+}
 const getAllBooksHandler = (request, h) => {
   const {
     name: keywordBook,
@@ -91,28 +102,14 @@ const getAllBooksHandler = (request, h) => {
       (book) =>
         book.name.toLowerCase().indexOf(keywordBook.toLowerCase()) !== -1
     );
-    bookFiltered.forEach((el) => {
-      const { id, name, publisher } = el;
-      const selectedBook = {
-        id,
-        name,
-        publisher,
-      };
-      allBook.push(selectedBook);
-    });
+
+    moveFilteredBook(bookFiltered, allBook);
   } else if (parseInt(statusRead, 10) === 0 || parseInt(statusRead, 10) === 1) {
     const bookFiltered = books.filter(
       (book) => book.reading === Boolean(parseInt(statusRead, 10))
     );
-    bookFiltered.forEach((el) => {
-      const { id, name, publisher } = el;
-      const selectedBook = {
-        id,
-        name,
-        publisher,
-      };
-      allBook.push(selectedBook);
-    });
+
+    moveFilteredBook(bookFiltered, allBook);
   } else if (
     parseInt(statusFinish, 10) === 0 ||
     parseInt(statusFinish, 10) === 1
@@ -120,26 +117,10 @@ const getAllBooksHandler = (request, h) => {
     const bookFiltered = books.filter(
       (book) => book.finished === Boolean(parseInt(statusFinish, 10))
     );
-    bookFiltered.forEach((el) => {
-      const { id, name, publisher } = el;
-      const selectedBook = {
-        id,
-        name,
-        publisher,
-      };
-      allBook.push(selectedBook);
-    });
-    console.log(allBook);
+
+    moveFilteredBook(bookFiltered, allBook);
   } else {
-    books.forEach((el) => {
-      const { id, name, publisher } = el;
-      const selectedBook = {
-        id,
-        name,
-        publisher,
-      };
-      allBook.push(selectedBook);
-    });
+    moveFilteredBook(books, allBook);
   }
   return h
     .response({
